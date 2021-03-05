@@ -22,8 +22,15 @@ def init_weights(modules):
 class vgg16_bn(torch.nn.Module):
     def __init__(self, pretrained=True, freeze=True):
         super(vgg16_bn, self).__init__()
-        model_urls['vgg16_bn'] = model_urls['vgg16_bn'].replace('https://', 'http://')
-        vgg_pretrained_features = models.vgg16_bn(pretrained=pretrained).features
+#         model_urls['vgg16_bn'] = model_urls['vgg16_bn'].replace('https://', 'http://')
+#         vgg_pretrained_features = models.vgg16_bn(pretrained=pretrained).features
+
+        vgg_pretrained_features = models.vgg16_bn(pretrained=False)
+        if pretrained:
+            vgg_pretrained_features.load_state_dict(
+                copyStateDict(torch.load('./pretrain/vgg16_bn-6c64b313.pth')))
+        vgg_pretrained_features = vgg_pretrained_features.features
+
         self.slice1 = torch.nn.Sequential()
         self.slice2 = torch.nn.Sequential()
         self.slice3 = torch.nn.Sequential()
